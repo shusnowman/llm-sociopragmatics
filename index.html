@@ -136,6 +136,13 @@ summary:hover h2 { color: var(--c, var(--accent)); }
 .ex-a { margin: 0; font-size: 15px; }
 .ex-a b { font-weight: 600; }
 .ex-note { margin: 0; font-size: 13.5px; color: var(--muted); }
+.ex-models { display: grid; gap: 6px; font-size: 14px; }
+.ex-mh { margin: 0 0 2px; font-size: 13px; color: var(--muted); }
+.ex-m { display: grid; grid-template-columns: minmax(0, 10.5em) minmax(0, 1fr); gap: 12px; }
+.ex-m .mn { font-weight: 500; }
+.ex-m .miss { color: var(--muted); }
+.ex-m em { color: var(--muted); }
+@media (max-width: 480px) { .ex-m { grid-template-columns: 1fr; gap: 0; } }
 
 .pub { font-size: 14.5px; margin: 0; max-width: 66ch; }
 .pub + .pub { margin-top: 10px; }
@@ -282,7 +289,7 @@ const B = [
    {type:"bar",title:"Recall по общей классификации",max:1,fmt:"f",items:[["GPT-5",.88],["GigaChat 2 Max",.62],["YandexGPT 5.1 Pro",.60]],cap:"У российских моделей почти идеальная precision, но recall заметно ниже."},
    {type:"bar",title:"Извлечение границ фрейма, T3 F1",max:1,fmt:"f",items:[["GPT-5",.67],["YandexGPT 5.1 Pro",.52],["GigaChat 2 Max",.52]],cap:"T3 усреднён по приветствиям и прощаниям."}],
   pubs:[{c:"Klokova K., Krongauz M., Shulginov V., Yudina T. Extracting Intentional Boundaries: Evaluating LLM on Greeting and Goodbye Sequences in Russian Dialogue // Computational Linguistics and Intellectual Technologies: Proceedings of the International Conference “Dialogue 2026”. 2026. P. 200–210.",u:"https://dialogue-conf.org/wp-content/uploads/2026/06/KlokovaKetal.086-1.pdf",y:2026},
-        {c:"Клокова К. С., Кронгауз М. А., Шульгинов В. А., Юдина Т. А. Прагматические границы приветствий и прощаний: оценка LLM на материале мультимедийного корпуса речевого этикета // Электронные библиотеки. 2026. В печати.",y:2026}]},
+        {c:"Клокова К. С., Кронгауз М. А., Шульгинов В. А., Юдина Т. А. Прагматические границы приветствий и прощаний: оценка LLM на материале мультимедийного корпуса речевого этикета // Электронные библиотеки. 2026. Т. 29, № 6. С. 2080–2104.",y:2026}]},
  {id:"disagreement",cat:"Прагматика, несогласие",title:"Смягчённые и несмягчённые типы несогласия",short:"Выявление несогласия: от вежливого расхождения во мнениях до сарказма, иронии и вербальной агрессии.",metric:"Overall accuracy",leader:"GPT-4o",value:"0,903",
   summary:"Сильные мультиязычные модели лучше справляются с общей детекцией несогласия, а GigaChat и YandexGPT проявляют локальную силу в более тонких сценариях вроде иронии.",
   note:"Мультиязычные модели лидируют по общей accuracy, но русскоязычные модели сильнее на иронии и сарказме и дают более плотные результаты.",
@@ -335,9 +342,10 @@ const B = [
 
 const EX = {
  etiquette: {task:"Определите, есть ли в диалоге приветствие или прощание, и выделите их точные границы.",
-  lines:[["Саяпин","<em>берёт трубку</em> Да?"],null,["Саяпин","<em>кивает</em> Всё."]],
-  answer:"<b>Приветствие и прощание.</b> Границы: «Да?» и «Всё.»",
-  note:"GPT-5 захватил вместе со словами сценические ремарки, а российские модели не нашли здесь ни одной последовательности."},
+  lines:[[null,"<em>У Саяпина звонит телефон</em>"],["Саяпин","<em>берёт трубку</em> Да?"],["Подчинённый","Ну что, и куда теперь?"],null,["Подчинённый","Угу."],["Саяпин","<em>кивает</em> Всё."]],
+  answer:"<b>Приветствие и прощание.</b> Эталонные границы: «Да?» и «Всё.»",
+  models:[["YandexGPT 5.1 Pro","ничего не нашла",0],["GigaChat 2 Max","ничего не нашла",0],["GPT-5","<em>берёт трубку</em> Да? | <em>кивает</em> Всё.",1]],
+  note:"Российские модели не узнают «да» и «всё» как этикетные сигналы в телефонном разговоре. GPT-5 их находит, но захватывает лишние ремарки."},
  disagreement: {task:"Это саркастическое или прямое несогласие?",
   lines:[["А","Помочь тебе с домашней работой по математике?"],["Б","Учитель года объявился!"]],
   opts:["Саркастическое несогласие","Прямое несогласие"], ok:0},
@@ -356,6 +364,7 @@ function example(id) {
     `<span>${l[0] ? `<span class="sp">${esc(l[0])}</span>` : ""}${l[1]}</span>`).join("") + `</div>`;
   if (e.opts) h += `<ul class="ex-opts">` + e.opts.map((o, i) => `<li${i === e.ok ? ' class="ok"' : ""}>${esc(o)}</li>`).join("") + `</ul>`;
   if (e.answer) h += `<p class="ex-a">${e.answer}</p>`;
+  if (e.models) h += `<div class="ex-models"><p class="ex-mh">Ответы моделей</p>` + e.models.map(m => `<div class="ex-m"><span class="mn">${esc(m[0])}</span><span class="${m[2] ? "part" : "miss"}">${m[1]}</span></div>`).join("") + `</div>`;
   if (e.note) h += `<p class="ex-note">${esc(e.note)}</p>`;
   return h + `</div>`;
 }

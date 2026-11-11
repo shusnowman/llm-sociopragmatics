@@ -186,7 +186,7 @@ nav.views a[aria-current="page"] { color: var(--ink); border-bottom-color: var(-
 <div class="wrap">
   <nav class="views" aria-label="Разделы">
     <a href="#benchmarks" data-view="benchmarks">Бенчмарки</a>
-    <a href="#author" data-view="author">Об авторе</a>
+    <a href="#contacts" data-view="author">Контакты</a>
   </nav>
 
   <article id="view-author" hidden>
@@ -241,7 +241,7 @@ nav.views a[aria-current="page"] { color: var(--ink); border-bottom-color: var(-
     <h1>Социопрагматические компетенции LLM</h1>
     <p class="lede">Экспертная оценка коммуникативной компетенции LLM. Создание бенчмарков для выявления коммуникативных и культурологических лакун в русскоязычной коммуникации.</p>
     <ul class="facts" id="facts"></ul>
-    <p class="byline">Автор проекта: <a href="#author">Валерий Александрович Шульгинов</a>, кандидат филологических наук</p>
+    <p class="byline">Автор проекта: <a href="#contacts">Валерий Александрович Шульгинов</a>, кандидат филологических наук</p>
   </header>
 
   <div class="list" id="list"></div>
@@ -253,7 +253,7 @@ nav.views a[aria-current="page"] { color: var(--ink); border-bottom-color: var(-
 
   </div>
 
-  <footer>Результаты взяты из соответствующих статей. © Валерий Шульгинов, 2025–2026. Контакт: <a href="mailto:me@vshulginov.ru">me@vshulginov.ru</a></footer>
+  <footer>Результаты взяты из соответствующих статей. © Валерий Шульгинов, 2025–2026.<span class="fc" hidden> Контакт: <a href="mailto:me@vshulginov.ru">me@vshulginov.ru</a></span></footer>
 </div>
 
 <script>
@@ -375,7 +375,8 @@ document.getElementById("facts").innerHTML =
 
 function openHash() {
   const id = location.hash.slice(1);
-  const isAuthor = id === "author";
+  const isAuthor = id === "contacts" || id === "author";
+  document.querySelector("footer .fc").hidden = !isAuthor;
   document.getElementById("view-author").hidden = !isAuthor;
   document.getElementById("view-benchmarks").hidden = isAuthor;
   document.querySelectorAll("nav.views a").forEach(a => {

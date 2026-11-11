@@ -151,6 +151,11 @@ nav.views a:hover { color: var(--ink); }
 nav.views a[aria-current="page"] { color: var(--ink); border-bottom-color: var(--accent); }
 .byline { font-size: 14.5px; color: var(--muted); margin: 0; }
 .byline a { color: var(--ink); }
+.contact { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin: 18px 0 0; font-size: 15px; }
+.contact .lbl { color: var(--muted); }
+.contact a { color: var(--accent); font-weight: 500; }
+.copy { font: 500 13px/1 var(--text); color: var(--muted); background: var(--track); border: 0; border-radius: 999px; padding: 6px 12px; cursor: pointer; }
+.copy:hover { color: var(--ink); }
 
 .author-head { display: grid; grid-template-columns: minmax(0, 220px) minmax(0, 1fr); gap: 36px; align-items: end; margin-bottom: clamp(40px, 7vw, 64px); }
 .author-head img { width: 100%; max-width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 4px; display: block; background: var(--track); }
@@ -191,8 +196,9 @@ nav.views a[aria-current="page"] { color: var(--ink); border-bottom-color: var(-
         <h1>Валерий Александрович Шульгинов</h1>
         <p class="degree">Кандидат филологических наук</p>
         <ul class="roles">
-          <li><b>НИУ ВШЭ.</b> Ведущий научный сотрудник Научно-учебной лаборатории лингвистической конфликтологии и современных коммуникативных практик, приглашённый преподаватель Школы филологических наук.</li>
+          <li><b><a href="https://www.hse.ru/org/persons/309076738" target="_blank" rel="noopener">НИУ ВШЭ</a>.</b> Ведущий научный сотрудник Научно-учебной лаборатории лингвистической конфликтологии и современных коммуникативных практик, приглашённый преподаватель Школы филологических наук.</li>
         </ul>
+        <p class="contact"><span class="lbl">Почта</span> <a href="mailto:me@vshulginov.ru" id="mail">me@vshulginov.ru</a> <button type="button" class="copy" id="copy-mail">Скопировать</button></p>
       </div>
     </div>
 
@@ -233,7 +239,7 @@ nav.views a[aria-current="page"] { color: var(--ink); border-bottom-color: var(-
   <div id="view-benchmarks">
   <header>
     <h1>Социопрагматические компетенции LLM</h1>
-    <p class="lede">Экспертная оценка коммуникативной компетенции LLM. Создание бенчмарков для выявления коммуникативных и культурологических лакун в коммуникации на русском языке.</p>
+    <p class="lede">Экспертная оценка коммуникативной компетенции LLM. Создание бенчмарков для выявления коммуникативных и культурологических лакун в русскоязычной коммуникации.</p>
     <ul class="facts" id="facts"></ul>
     <p class="byline">Автор проекта: <a href="#author">Валерий Александрович Шульгинов</a>, кандидат филологических наук</p>
   </header>
@@ -247,7 +253,7 @@ nav.views a[aria-current="page"] { color: var(--ink); border-bottom-color: var(-
 
   </div>
 
-  <footer>Результаты взяты из соответствующих статей. © Валерий Шульгинов, 2025–2026</footer>
+  <footer>Результаты взяты из соответствующих статей. © Валерий Шульгинов, 2025–2026. Контакт: <a href="mailto:me@vshulginov.ru">me@vshulginov.ru</a></footer>
 </div>
 
 <script>
@@ -381,6 +387,11 @@ function openHash() {
   else window.scrollTo(0, 0);
 }
 window.addEventListener("hashchange", openHash);
+document.getElementById("copy-mail").addEventListener("click", e => {
+  const btn = e.currentTarget, done = () => { btn.textContent = "Скопировано"; setTimeout(() => btn.textContent = "Скопировать", 1800); };
+  const fallback = () => { const r = document.createRange(); r.selectNodeContents(document.getElementById("mail")); const s = getSelection(); s.removeAllRanges(); s.addRange(r); };
+  try { navigator.clipboard.writeText("me@vshulginov.ru").then(done, fallback); } catch (err) { fallback(); }
+});
 openHash();
 </script>
 </body>

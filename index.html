@@ -58,7 +58,8 @@ h1 {
   letter-spacing: -0.02em; margin: 0; text-wrap: balance;
   font-variation-settings: "opsz" 72;
 }
-.lede { font-size: 18px; color: var(--muted); max-width: 60ch; margin: 0; }
+.lede { font-size: 18px; color: var(--muted); max-width: 60ch; margin: 0; display: grid; gap: 12px; }
+.lede p { margin: 0; }
 .facts { display: flex; flex-wrap: wrap; gap: 8px 28px; font-size: 14px; color: var(--muted); margin: 4px 0 0; padding: 0; list-style: none; }
 .facts b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
 
@@ -264,7 +265,10 @@ nav.views a[aria-current="page"] { color: var(--ink); border-bottom-color: var(-
   <div id="view-benchmarks">
   <header>
     <h1>Социопрагматические компетенции LLM</h1>
-    <p class="lede">Экспертная оценка коммуникативной компетенции LLM. Создание бенчмарков для выявления коммуникативных и культурологических лакун в русскоязычной коммуникации.</p>
+    <div class="lede">
+      <p>Большие языковые модели (LLM) всё чаще выступают в роли собеседника. Их используют в разных областях, от научных исследований до психологии. Чтобы оценить качество дискурсивных практик моделей, нужен инструментарий, учитывающий особенности общения на русском языке.</p>
+      <p>Проект включает экспертную оценку коммуникативной компетенции LLM и разработку бенчмарков для выявления ошибок в диалоге и пробелов в понимании культурного контекста.</p>
+    </div>
     <ul class="facts" id="facts"></ul>
   </header>
 

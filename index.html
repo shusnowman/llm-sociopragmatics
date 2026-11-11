@@ -123,6 +123,19 @@ summary:hover h2 { color: var(--c, var(--accent)); }
 .s1 { background: var(--c, var(--accent)) !important; opacity: .38 !important; }
 .cap { font-size: 13px; color: var(--muted); margin: 10px 0 0; max-width: 62ch; }
 .charts { display: grid; gap: 30px; }
+.ex { border-radius: 10px; background: var(--track); padding: 20px 22px; display: grid; gap: 14px; max-width: 640px; }
+.ex-h { font-size: 13px; font-weight: 600; color: var(--c, var(--accent)); margin: 0; }
+.ex-task { margin: 0; font-size: 15px; }
+.ex-lines { margin: 0; padding: 14px 16px; background: var(--paper); border-radius: 6px; display: grid; gap: 6px; font: 400 16px/1.5 var(--display); }
+.ex-lines .sp { font: 600 13px/1.5 var(--text); color: var(--muted); margin-right: 8px; }
+.ex-lines .gap { color: var(--muted); font-family: var(--text); }
+.ex-lines em { color: var(--muted); }
+.ex-opts { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 6px; }
+.ex-opts li { font-size: 14px; padding: 4px 11px; border-radius: 999px; background: var(--paper); }
+.ex-opts li.ok { background: var(--c, var(--accent)); color: var(--paper); font-weight: 500; }
+.ex-a { margin: 0; font-size: 15px; }
+.ex-a b { font-weight: 600; }
+.ex-note { margin: 0; font-size: 13.5px; color: var(--muted); }
 
 .pub { font-size: 14.5px; margin: 0; max-width: 66ch; }
 .pub + .pub { margin-top: 10px; }
@@ -320,6 +333,32 @@ const B = [
   pubs:[{c:"Пестова А. Р., Шульгинов В. А. Как ИИшка описывает нирвану: могут ли большие языковые модели составлять толковые словари? В печати.",y:2026}]}
 ];
 
+const EX = {
+ etiquette: {task:"Определите, есть ли в диалоге приветствие или прощание, и выделите их точные границы.",
+  lines:[["Саяпин","<em>берёт трубку</em> Да?"],null,["Саяпин","<em>кивает</em> Всё."]],
+  answer:"<b>Приветствие и прощание.</b> Границы: «Да?» и «Всё.»",
+  note:"GPT-5 захватил вместе со словами сценические ремарки, а российские модели не нашли здесь ни одной последовательности."},
+ disagreement: {task:"Это саркастическое или прямое несогласие?",
+  lines:[["А","Помочь тебе с домашней работой по математике?"],["Б","Учитель года объявился!"]],
+  opts:["Саркастическое несогласие","Прямое несогласие"], ok:0},
+ culture: {task:"На фантике какой конфеты изображена картина Ивана Шишкина «Утро в сосновом бору»?",
+  opts:["Белочка","Гулливер","Мишка на Севере","Кара-Кум","Красная Шапочка","Мишка косолапый"], ok:5,
+  note:"Блок «Культурные типы», один верный ответ из шести."},
+ proverbs: {task:"Определите тип референции пословицы в этом контексте и обоснуйте выбор.",
+  lines:[[null,"…а тут — своя рука владыка: одному народному — такую зарплату положу"]],
+  opts:["Конкретная","Абстрактная","Смешанная","Неопределённая"], ok:0,
+  note:"Пословица отсылает к одной реальной ситуации, поэтому референция конкретная. Фрагмент из мемуаров В. М. Чернова."}
+};
+function example(id) {
+  const e = EX[id]; if (!e) return "";
+  let h = `<div class="ex"><p class="ex-h">Пример задачи</p><p class="ex-task">${esc(e.task)}</p>`;
+  if (e.lines) h += `<div class="ex-lines">` + e.lines.map(l => l === null ? `<span class="gap">…</span>` :
+    `<span>${l[0] ? `<span class="sp">${esc(l[0])}</span>` : ""}${l[1]}</span>`).join("") + `</div>`;
+  if (e.opts) h += `<ul class="ex-opts">` + e.opts.map((o, i) => `<li${i === e.ok ? ' class="ok"' : ""}>${esc(o)}</li>`).join("") + `</ul>`;
+  if (e.answer) h += `<p class="ex-a">${e.answer}</p>`;
+  if (e.note) h += `<p class="ex-note">${esc(e.note)}</p>`;
+  return h + `</div>`;
+}
 const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const fmt = (v, f) => {
   const ru = n => n.replace(".", ",");
@@ -362,6 +401,7 @@ document.getElementById("list").innerHTML = B.map(b => `
   </summary>
   <div class="body">
     <p class="summary">${esc(b.summary)}</p>
+    ${example(b.id)}
     <dl class="facts-grid">${b.details.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>
     <div class="charts">${b.charts.map(chart).join("")}</div>
     <p class="note">${esc(b.note)}</p>
